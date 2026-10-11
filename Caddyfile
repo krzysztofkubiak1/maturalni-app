@@ -1,0 +1,23 @@
+# Produkcyjna konfiguracja Caddy. Domena z env DOMAIN (patrz .env / docker-compose.yml).
+# Automatyczne HTTPS to domyślne zachowanie Caddy — potrzebuje tylko realnej domeny
+# wskazującej (rekordy A/AAAA) na ten serwer i otwartych portów 80 + 443.
+
+www.{$DOMAIN} {
+	redir https://{$DOMAIN}{uri} permanent
+}
+
+{$DOMAIN} {
+	encode zstd gzip
+
+	# API Pythona — zawsze pod /api/*.
+	handle /api/* {
+		reverse_proxy backend:8000
+	}
+
+	# Wszystko inne idzie do Next.js. To NIE są pliki statyczne z fallbackiem na
+	# index.html (ta appka ma strony renderowane po stronie serwera, middleware
+	# i Server Actions) — routing i 404 ogarnia sam serwer Next.js w kontenerze.
+	handle {
+		reverse_proxy frontend:3000
+	}
+}

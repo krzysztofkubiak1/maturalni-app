@@ -1,0 +1,54 @@
+import "server-only";
+
+import { cookies } from "next/headers";
+import { SESSION_COOKIE, type AuthUser } from "@/lib/user";
+
+// Serwer Next.js woła backend bezpośrednio (z pominięciem proxy /api/*).
+// Na produkcji ustaw INTERNAL_API_URL na wewnętrzny adres API.
+const INTERNAL_API_URL = process.env.INTERNAL_API_URL ?? "http://127.0.0.1:8000";
+
+/**
+ * Zwraca zalogowanego użytkownika albo null.
+ * Do użycia wyłącznie w komponentach serwerowych (czyta ciasteczko żądania).
+ */
+export async function getCurrentUser(): Promise<AuthUser | null> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get(SESSION_COOKIE);
+  if (!token) return null;
+
+  try {
+    const res = await fetch(`${INTERNAL_API_URL}/api/auth/me`, {
+      headers: { cookie: `${token.name}=${token.value}` },
+      cache: "no-store",
+    });
+    if (!res.ok) return null;
+    return (await res.json()) as AuthUser;
+  } catch {
+    // Backend nie odpowiada — traktujemy jak brak sesji.
+    return null;
+  }
+}
+
+export type PurchasedCourse = {
+  course_slug: string;
+  course_title: string;
+  purchased_at: string;
+};
+
+/** Lista kursów, do których zalogowany użytkownik ma opłacony dostęp. */
+export async function getMyCourses(): Promise<PurchasedCourse[]> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get(SESSION_COOKIE);
+  if (!token) return [];
+
+  try {
+    const res = await fetch(`${INTERNAL_API_URL}/api/me/courses`, {
+      headers: { cookie: `${token.name}=${token.value}` },
+      cache: "no-store",
+    });
+    if (!res.ok) return [];
+    return (await res.json()) as PurchasedCourse[];
+  } catch {
+    return [];
+  }
+}

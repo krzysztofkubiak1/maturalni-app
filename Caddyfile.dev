@@ -1,0 +1,14 @@
+# Wersja do lokalnych testów: http://localhost, bez automatycznego HTTPS.
+# Używana przez docker-compose.dev.yml (patrz DEPLOY.md).
+
+http://localhost {
+	encode zstd gzip
+
+	handle /api/* {
+		reverse_proxy backend:8000
+	}
+
+	handle {
+		reverse_proxy frontend:3000
+	}
+}

@@ -1,0 +1,68 @@
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    # Brak "ports": baza nie jest wystawiona poza siecią Dockera.
+
+  backend:
+    build:
+      context: ./backend
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      # Złożone z POSTGRES_*/DOMAIN — nie wpisuj tego ręcznie w .env.
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      CORS_ORIGINS: https://${DOMAIN},https://www.${DOMAIN}
+      PUBLIC_BASE_URL: https://${DOMAIN}
+    depends_on:
+      db:
+        condition: service_healthy
+    # Brak "ports": backend jest widoczny tylko dla innych kontenerów (frontend, caddy)
+    # po nazwie usługi "backend", nie z zewnątrz.
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      # Oba muszą wskazywać na backend w sieci Dockera — patrz next.config.ts i src/lib/*.
+      API_PROXY_TARGET: http://backend:8000
+      INTERNAL_API_URL: http://backend:8000
+    depends_on:
+      backend:
+        condition: service_healthy
+    # Brak "ports": front jest widoczny tylko dla Caddy, po nazwie usługi "frontend".
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - backend
+      - frontend
+
+volumes:
+  postgres_data:
+  caddy_data:
+  caddy_config:
