@@ -100,6 +100,15 @@ cały przepływ da się przetestować lokalnie bez zakładania konta u dostawcy 
    adres, którym założyłeś konto w Resend — żeby wysyłać do dowolnych adresów,
    zweryfikuj własną domenę w panelu Resend i ustaw `RESEND_FROM_EMAIL`.
 
+**Jeśli dostajesz `RuntimeError: Wysyłka e-maila nie powiodła się (403)`** — zajrzyj
+do logu serwera, linijka wyżej (`Resend zwrócił błąd 403: ...`) ma prawdziwy powód:
+- `error code: 1010` — to w ogóle nie błąd Resend, to Cloudflare blokujący żądanie
+  po User-Agencie (naprawione — `app/email.py` wysyła teraz własny, nie domyślny
+  z `urllib`). Jeśli to się powtarza, zaktualizuj plik.
+- `"You can only send testing emails to your own email address..."` — to już
+  prawdziwy Resend: patrz punkt 3 wyżej, musisz albo wysyłać tylko na swój adres,
+  albo zweryfikować domenę.
+
 Inne ustawienia (`backend/.env`): `OTP_TTL_MINUTES` (ważność kodu, domyślnie 10 minut),
 `OTP_MAX_ATTEMPTS` (ile złych prób, zanim trzeba poprosić o nowy kod, domyślnie 5),
 `OTP_RESEND_COOLDOWN_SECONDS` (jak często można klikać „wyślij kod ponownie”).

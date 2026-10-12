@@ -34,6 +34,7 @@ zamówienie nigdy samo nie zmieni statusu na "paid" — patrz _notify_admins_new
 
 from __future__ import annotations
 
+import logging
 from uuid import uuid4
 
 import stripe
@@ -57,6 +58,8 @@ from .schemas import (
     SCHEDULE_SLOTS,
 )
 from .security import utcnow
+
+logger = logging.getLogger("app.payments")
 
 router = APIRouter(tags=["payments"])
 
@@ -418,9 +421,14 @@ def create_checkout_session(
     try:
         checkout_session = stripe.checkout.Session.create(**session_kwargs)
     except stripe.StripeError as exc:  # pragma: no cover - zależne od API Stripe
+        # exc.user_message to tekst, który Stripe samo pisze z myślą o pokazaniu
+        # klientowi (np. "Twoja karta została odrzucona") — bezpieczny do wyświetlenia.
+        # str(exc) bywa surowym, technicznym komunikatem (ID żądania, szczegóły API) —
+        # tego nigdy nie pokazujemy, tylko logujemy.
+        logger.warning("Stripe odrzucił utworzenie sesji checkout: %s", exc)
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
-            detail=f"Stripe odrzucił żądanie: {exc.user_message or str(exc)}",
+            detail=exc.user_message or "Płatność się nie powiodła. Spróbuj ponownie za chwilę.",
         ) from exc
 
     order = Order(
@@ -488,9 +496,10 @@ def confirm_checkout(
     try:
         checkout_session = stripe.checkout.Session.retrieve(data.session_id)
     except stripe.StripeError as exc:  # pragma: no cover
+        logger.warning("Stripe odrzucił sprawdzenie sesji checkout: %s", exc)
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
-            detail=f"Nie udało się sprawdzić płatności: {exc.user_message or str(exc)}",
+            detail=exc.user_message or "Nie udało się sprawdzić płatności. Spróbuj ponownie za chwilę.",
         ) from exc
 
     if str(checkout_session.get("client_reference_id")) != str(current_user.id):

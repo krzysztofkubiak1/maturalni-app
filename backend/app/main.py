@@ -14,9 +14,10 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from . import auth, payments
+from . import auth, contact, payments
 from .config import settings
 from .database import init_db
+from .errors import install_error_handlers
 
 
 @asynccontextmanager
@@ -27,6 +28,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="Maturalia — API", version="0.1.0", lifespan=lifespan)
+install_error_handlers(app)
 
 app.add_middleware(
     CORSMiddleware,
@@ -38,6 +40,7 @@ app.add_middleware(
 
 app.include_router(auth.router)
 app.include_router(payments.router)
+app.include_router(contact.router)
 
 
 @app.get("/api/health", tags=["meta"])

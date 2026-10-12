@@ -537,7 +537,7 @@ export const courses: Course[] = [
     lessons: 25,
     hoursTotal: 50,
     groupSize: "do 50 osób",
-    price: { amount: 100, unit: "/ leckje.", note: "płatne z góry" }, // TODO
+    price: { amount: 100, unit: "/ lekcje.", note: "płatne z góry" }, // TODO
     forWhom: [
       "Zdajesz rozszerzenie i potrzebujesz konkretnego wyniku na studia",
       "Masz braki z wcześniejszych klas i chcesz je uzupełnić bez wstydu",

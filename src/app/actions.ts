@@ -3,6 +3,10 @@
 import { courses } from "@/data/courses";
 import type { ContactState } from "@/lib/contactState";
 
+// Server Action działa na serwerze Next.js, nie w przeglądarce — bezpiecznie
+// woła backend wewnętrznym adresem (ten sam wzorzec co src/lib/auth.ts).
+const INTERNAL_API_URL = process.env.INTERNAL_API_URL ?? "http://127.0.0.1:8000";
+
 const digitsOnly = (value: string) => value.replace(/\D/g, "");
 
 export async function submitContact(
@@ -55,30 +59,32 @@ export async function submitContact(
     };
   }
 
-  const courseTitle =
-    courses.find((c) => c.slug === course)?.title ?? "nie wybrano kursu";
-
-  const submission = {
-    receivedAt: new Date().toISOString(),
-    name,
-    phone,
-    email: email || "—",
-    course: courseTitle,
-    message: message || "—",
-  };
+  const courseTitle = course ? courses.find((c) => c.slug === course)?.title ?? null : null;
 
   try {
-    // ------------------------------------------------------------------
-    // TODO: podłącz docelową obsługę zgłoszenia. Możliwości:
-    //  1. Wysyłka e-maila (np. Resend):
-    //       await resend.emails.send({ to: contact.email, subject: ..., text: ... })
-    //  2. Zapis do bazy (Supabase / Postgres / Airtable)
-    //  3. Webhook do CRM-u albo powiadomienie na Slacka/Discorda
-    //
-    // Na razie zgłoszenie trafia tylko do logów serwera — pamiętaj, żeby
-    // podmienić to przed uruchomieniem strony produkcyjnie.
-    // ------------------------------------------------------------------
-    console.log("[zgłoszenie z formularza]", submission);
+    const res = await fetch(`${INTERNAL_API_URL}/api/contact`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name,
+        phone,
+        email: email || null,
+        course_slug: course || null,
+        course_title: courseTitle,
+        message: message || null,
+        consent,
+      }),
+    });
+
+    if (!res.ok) {
+      const body = await res.json().catch(() => null);
+      return {
+        status: "error",
+        message: "Popraw zaznaczone pola i spróbuj ponownie.",
+        errors: mapBackendErrors(body?.detail),
+        values,
+      };
+    }
 
     return {
       status: "success",
@@ -95,4 +101,28 @@ export async function submitContact(
       values,
     };
   }
+}
+
+/** Mapuje {detail: [{loc, msg}]} z FastAPI na pola formularza (patrz ContactState). */
+function mapBackendErrors(detail: unknown): NonNullable<ContactState["errors"]> {
+  const knownFields = new Set(["name", "phone", "email", "consent"]);
+  const errors: NonNullable<ContactState["errors"]> = {};
+
+  if (!Array.isArray(detail) || detail.length === 0) {
+    errors.form = "Nie udało się wysłać zgłoszenia. Spróbuj ponownie.";
+    return errors;
+  }
+
+  for (const item of detail) {
+    const loc = Array.isArray(item?.loc) ? item.loc : [];
+    const field = String(loc[loc.length - 1] ?? "");
+    const msg = typeof item?.msg === "string" ? item.msg : "Nieprawidłowa wartość.";
+    if (knownFields.has(field)) {
+      errors[field as "name" | "phone" | "email" | "consent"] = msg;
+    } else {
+      errors.form = msg;
+    }
+  }
+
+  return errors;
 }

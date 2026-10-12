@@ -32,6 +32,19 @@ class User(SQLModel, table=True):
     google_sub: str | None = Field(default=None, unique=True, index=True)
 
 
+class ContactMessage(SQLModel, table=True):
+    """Zgłoszenie z ogólnego formularza kontaktowego ("Zamów rozmowę" itd.)."""
+
+    id: int | None = Field(default=None, primary_key=True)
+    name: str
+    phone: str
+    email: str | None = None
+    course_slug: str | None = None
+    course_title: str | None = None
+    message: str | None = None
+    created_at: datetime = Field(default_factory=utcnow)
+
+
 class AuthSession(SQLModel, table=True):
     """
     Aktywna sesja logowania.

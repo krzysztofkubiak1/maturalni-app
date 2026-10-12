@@ -14,24 +14,21 @@ export const site = {
   description:
     "Kursy maturalne z matematyki online. Poziom podstawowy i rozszerzony, zajęcia na żywo w małych grupach. Pełen program CKE, arkusze, zadania domowe ze sprawdzaniem.",
   // TODO: docelowy adres strony (bez ukośnika na końcu)
-  url: "https://example.pl",
+  url: "https://maturalia-kursy.pl",
   locale: "pl_PL",
 } as const;
 
 export const contact = {
-  // TODO: prawdziwy numer telefonu
   phone: "+48 532 702 555",
   phoneHref: "tel:+48532702555",
-  // TODO: prawdziwy adres e-mail
-  email: "kontakt@example.pl",
-  emailHref: "mailto:kontakt@example.pl",
-  // TODO: adres / dane rejestrowe
+  email: "kontakt@maturalia-kursy.pl",
+  emailHref: "mailto:kontakt@maturalia-kursy.pl",
   address: "ul. Mozarta 8 02-736 Warszawa",
   // TODO: linki do social mediów (pusty string = link się nie wyświetli)
   socials: {
-    facebook: "https://facebook.com/",
-    instagram: "https://instagram.com/",
-    youtube: "https://youtube.com/",
+    facebook: "",
+    instagram: "",
+    youtube: "",
     tiktok: "",
   },
   // Godziny pracy biura — pokazywane na stronie kontaktu
@@ -54,7 +51,7 @@ export const teachers: Teacher[] = [
     slug: "prowadzacy-1",
     name: "mgr inż. Magdalena Komuda-Kubiak",
     title: "Matematyka rozszerzona/podstawowa",
-    bio: "Magister inżynier matematyki, ukończyła kierunek matematyka na wydziale Fizyki Technicznej i Matematyki Stosowanej Politechniki Warszawskiej (obecnie wydział Matematyki i Nauk Informacyjnych), od wielu lat przygotowyj uczniów idyiwdualnie do matury z matematyki.",
+    bio: "Magister inżynier matematyki, ukończyła kierunek matematyka na wydziale Fizyki Technicznej i Matematyki Stosowanej Politechniki Warszawskiej (obecnie wydział Matematyki i Nauk Informacyjnych), od wielu lat przygotowuje uczniów indywidualnie do matury z matematyki.",
     initials: "MK",
     highlights: [
       "Magister inżynier matematyki",
@@ -64,7 +61,7 @@ export const teachers: Teacher[] = [
   },
   {
     slug: "prowadzacy-2",
-    name: "Wojciech Kubiak", // TODO
+    name: "Wojciech Kubiak",
     title: "Matematyka rozszerzona/podstawowa",
     bio: "Student kierunku Matematyka i Analiza danych na Wydziale Matematyki i Nauk Informacyjnych Politechniki Warszawskiej, prowadzi indywidualne zajęcia z matematyki z wieloma uczniami.",
     initials: "WK",
@@ -166,7 +163,7 @@ export const faq = [
   },
   {
     q: "Czy prowadzicie zajęcia stacjonarnie?",
-    a: "Kursy prowadzimy online, jak i stacjonarnie.", // TODO: zmień, jeśli prowadzisz też zajęcia stacjonarne
+    a: "Kursy prowadzimy stacjonarnie, jak i online.", 
   },
 ] as const;
 

@@ -54,6 +54,11 @@ def send_email(to: str | list[str], subject: str, text: str) -> None:
         headers={
             "Authorization": f"Bearer {settings.resend_api_key}",
             "Content-Type": "application/json",
+            # Bez tego: domyślny User-Agent urllib ("Python-urllib/3.x") trafia
+            # na Cloudflare przed API Resend i dostaje 403 (error code: 1010 —
+            # "banned based on your browser's signature"), zanim żądanie
+            # w ogóle dotrze do Resend. Wygląda jak błąd Resend, a to Cloudflare.
+            "User-Agent": "maturalia-backend/1.0 (+https://resend.com)",
         },
     )
     try:

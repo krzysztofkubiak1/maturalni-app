@@ -7,6 +7,13 @@ from datetime import datetime
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator, model_validator
 
 
+def _validate_phone(value: str) -> str:
+    digits = "".join(ch for ch in value if ch.isdigit())
+    if not (9 <= len(digits) <= 15):
+        raise ValueError("Podaj poprawny numer telefonu.")
+    return value.strip()
+
+
 class RegisterIn(BaseModel):
     name: str = Field(min_length=2, max_length=80)
     last_name: str = Field(min_length=2, max_length=80)
@@ -33,6 +40,47 @@ class RegisterIn(BaseModel):
                 "Musisz zaakceptować regulamin i politykę prywatności, żeby założyć konto."
             )
         return value
+
+
+class ContactIn(BaseModel):
+    """Zgłoszenie z ogólnego formularza kontaktowego (gość, bez logowania)."""
+
+    name: str = Field(min_length=2, max_length=80)
+    phone: str
+    email: EmailStr | None = None
+    course_slug: str | None = Field(default=None, max_length=120)
+    course_title: str | None = Field(default=None, max_length=200)
+    message: str | None = Field(default=None, max_length=2000)
+    consent: bool
+    # Pole-pułapka na boty — u nas zawsze powinno być puste. Walidacja zgody
+    # i reszty i tak dzieje się tu niezależnie od tego, co sprawdził już front
+    # (Server Action) — ten endpoint jest dostępny bezpośrednio pod /api/contact.
+    company: str | None = None
+
+    @field_validator("phone")
+    @classmethod
+    def validate_phone_field(cls, value: str) -> str:
+        return _validate_phone(value)
+
+    @field_validator("consent")
+    @classmethod
+    def validate_consent(cls, value: bool) -> bool:
+        if not value:
+            raise ValueError("Bez zgody na kontakt nie możemy do Ciebie oddzwonić.")
+        return value
+
+
+class ContactOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+    phone: str
+    email: str | None
+    course_slug: str | None
+    course_title: str | None
+    message: str | None
+    created_at: datetime
 
 
 class LoginIn(BaseModel):
@@ -85,13 +133,6 @@ SCHEDULE_SLOTS: dict[str, str] = {
 }
 
 
-def _validate_phone(value: str) -> str:
-    digits = "".join(ch for ch in value if ch.isdigit())
-    if not (9 <= len(digits) <= 15):
-        raise ValueError("Podaj poprawny numer telefonu.")
-    return value.strip()
-
-
 class CheckoutIn(BaseModel):
     course_slug: str = Field(min_length=1, max_length=120)
 
@@ -100,7 +141,10 @@ class CheckoutIn(BaseModel):
     student_name: str = Field(min_length=2, max_length=80)
     student_last_name: str = Field(min_length=2, max_length=80)
     student_email: EmailStr
-    student_phone: str = Field(min_length=6, max_length=20)
+    # Bez min/max_length: długość sprawdza _validate_phone (po cyfrach, nie po
+    # surowym stringu) — Field-owy limit sprawdzałby się PRZED field_validatorem
+    # i rzucałby angielski komunikat Pydantic zamiast naszego polskiego.
+    student_phone: str
     student_street: str = Field(min_length=2, max_length=160)
     student_building_number: str = Field(min_length=1, max_length=20)
     student_apartment_number: str | None = Field(default=None, max_length=20)
@@ -114,7 +158,7 @@ class CheckoutIn(BaseModel):
     is_minor: bool = False
     guardian_name: str | None = Field(default=None, max_length=80)
     guardian_last_name: str | None = Field(default=None, max_length=80)
-    guardian_phone: str | None = Field(default=None, max_length=20)
+    guardian_phone: str | None = None
     guardian_email: EmailStr | None = None
     guardian_street: str | None = Field(default=None, max_length=160)
     guardian_building_number: str | None = Field(default=None, max_length=20)
