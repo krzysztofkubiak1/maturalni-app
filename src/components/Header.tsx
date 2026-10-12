@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ChevronDown, LayoutDashboard, LogOut, Menu, Phone, Sigma, X } from "lucide-react";
+import { ChevronDown, LayoutDashboard, LogOut, Menu, Phone, Sigma, User, X } from "lucide-react";
 import { contact, navLinks, site } from "@/data/site";
 import { courses } from "@/data/courses";
 import { ButtonLink, Container, cx } from "@/components/ui";
@@ -189,6 +189,20 @@ export default function Header() {
                 </ButtonLink>
               </>
             )}
+
+            {!loading ? (
+              <Link
+                href={user ? "/panel" : "/logowanie"}
+                aria-label={user ? "Panel" : "Zaloguj się"}
+                className="grid size-10 place-items-center rounded-xl border border-slate-300 text-slate-700 transition hover:bg-slate-50 sm:hidden"
+              >
+                {user ? (
+                  <LayoutDashboard className="size-5" />
+                ) : (
+                  <User className="size-5" />
+                )}
+              </Link>
+            ) : null}
 
             <button
               type="button"

@@ -21,7 +21,7 @@ export default function CourseCheckout({ slug, priceAmount, priceUnit, recurring
         className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-brand-600/25 transition hover:bg-brand-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
       >
         <CalendarCheck className="size-4" />
-        Zarezerwuj termin — {priceAmount} zł
+        Zarezerwuj termin
       </Link>
 
       <p className="mt-2 text-center text-xs text-slate-500">
