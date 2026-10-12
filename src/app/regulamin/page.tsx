@@ -16,7 +16,8 @@ const sections = [
     title: "§1. Postanowienia ogólne",
     items: [
       `Regulamin określa zasady korzystania z kursów przygotowujących do egzaminu maturalnego z matematyki, organizowanych przez ${site.name} (dalej: Organizator).`,
-      "TODO: uzupełnij pełne dane rejestrowe Organizatora — nazwa, adres, NIP, REGON, forma prawna.",
+      `Organizatorem jest Krzysztof Kubiak, prowadzący działalność nierejestrowaną w rozumieniu art. 5 ustawy z dnia 6 marca 2018 r. – Prawo przedsiębiorców, działający pod marką ${site.name}. Adres do korespondencji: ${contact.address}.`,
+      "Działalność prowadzona jest w ramach ustawowego limitu przychodu dla działalności nierejestrowanej. Po jego przekroczeniu lub rejestracji działalności gospodarczej Organizator niezwłocznie uzupełni regulamin o dane rejestrowe (NIP, REGON).",
       `Kontakt z Organizatorem: ${contact.phone}, ${contact.email}.`,
       "Uczestnikiem kursu może być osoba pełnoletnia lub osoba niepełnoletnia za zgodą rodzica albo opiekuna prawnego.",
     ],
@@ -45,7 +46,8 @@ const sections = [
       "Opłata za kursy prowadzone na żywo naliczana jest miesięcznie, z dołu, wyłącznie za zajęcia, które się odbyły.",
       "Kursy wideo (VOD) opłacane są jednorazowo przed uzyskaniem dostępu do materiałów.",
       "Organizator nie pobiera opłaty wpisowej ani opłat z góry za cały okres trwania kursu.",
-      "TODO: uzupełnij szczegóły — termin płatności, numer rachunku bankowego, obsługiwane metody płatności, zasady wystawiania faktur.",
+      "Zapis przez formularz na stronie jest rezerwacją terminu, nie płatnością online. Sposób i termin zapłaty (w tym numer rachunku bankowego) Organizator przekazuje Uczestnikowi indywidualnie po kontakcie zwrotnym.",
+      "Organizator nie jest płatnikiem VAT. Na życzenie Uczestnika wystawia rachunek potwierdzający dokonanie płatności.",
     ],
   },
   {
@@ -54,7 +56,7 @@ const sections = [
       "Uczestnik może zrezygnować z kursu w dowolnym momencie, informując o tym Organizatora telefonicznie lub mailowo.",
       "Rezygnacja jest skuteczna od końca miesiąca, w którym została zgłoszona; Uczestnik opłaca zajęcia, które odbyły się do tego dnia.",
       "Konsumentowi przysługuje prawo odstąpienia od umowy zawartej na odległość w terminie 14 dni, na zasadach wynikających z ustawy o prawach konsumenta.",
-      "TODO: doprecyzuj zasady odstąpienia dla kursów wideo (dostęp cyfrowy) — w szczególności kwestię zgody na rozpoczęcie świadczenia przed upływem terminu odstąpienia.",
+      "W przypadku kursów wideo (dostęp cyfrowy) prawo odstąpienia wygasa, jeśli Uczestnik wyraźnie zgodził się na rozpoczęcie dostępu do materiałów przed upływem terminu odstąpienia i został poinformowany, że tym samym traci to prawo — zgodnie z art. 38 pkt 13 ustawy o prawach konsumenta.",
     ],
   },
   {
@@ -78,7 +80,7 @@ const sections = [
     items: [
       "W sprawach nieuregulowanych regulaminem zastosowanie mają przepisy prawa polskiego.",
       "Organizator zastrzega sobie prawo do zmiany regulaminu; o zmianach Uczestnicy informowani są z wyprzedzeniem, a zmiany nie wpływają na warunki już rozpoczętych kursów.",
-      "TODO: uzupełnij datę wejścia regulaminu w życie.",
+      "Niniejszy Regulamin obowiązuje od dnia jego opublikowania na stronie internetowej.",
     ],
   },
 ];

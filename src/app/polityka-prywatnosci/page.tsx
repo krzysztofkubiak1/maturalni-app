@@ -15,8 +15,8 @@ const sections = [
   {
     title: "1. Administrator danych",
     items: [
-      `Administratorem danych osobowych jest ${site.name}.`,
-      "TODO: uzupełnij pełne dane administratora — nazwa, adres siedziby, NIP oraz dane kontaktowe do spraw ochrony danych (ewentualnie dane inspektora ochrony danych, jeśli został wyznaczony).",
+      `Administratorem danych osobowych jest Krzysztof Kubiak, prowadzący działalność nierejestrowaną w rozumieniu art. 5 ustawy z dnia 6 marca 2018 r. – Prawo przedsiębiorców, działający pod marką ${site.name}.`,
+      `Adres do korespondencji: ${contact.address}. Nie wyznaczono inspektora ochrony danych — we wszystkich sprawach związanych z danymi osobowymi należy kontaktować się bezpośrednio z Administratorem.`,
       `Kontakt w sprawach danych osobowych: ${contact.email}, ${contact.phone}.`,
     ],
   },
@@ -42,14 +42,13 @@ const sections = [
     items: [
       "Dane przetwarzane na podstawie zgody — do czasu jej wycofania, nie dłużej niż przez 24 miesiące od ostatniego kontaktu.",
       "Dane związane z umową — przez czas trwania umowy oraz przez okres wynikający z przepisów podatkowych (co do zasady 5 lat).",
-      "TODO: zweryfikuj powyższe okresy z osobą odpowiedzialną za ochronę danych w Twojej organizacji.",
     ],
   },
   {
     title: "5. Odbiorcy danych",
     items: [
-      "Dane mogą być przekazywane podmiotom wspierającym działanie strony i firmy: dostawcy hostingu, systemu poczty elektronicznej, biuru rachunkowemu oraz dostawcy platformy do zajęć online.",
-      "TODO: wypisz konkretnych dostawców, z których faktycznie korzystasz, i zawrzyj z nimi umowy powierzenia przetwarzania danych.",
+      "Dane mogą być przekazywane podmiotom wspierającym działanie strony: dostawcy hostingu serwera, dostawcy poczty transakcyjnej Resend (wysyłka e-maili z kodami logowania i powiadomień) oraz — wyłącznie gdy Uczestnik sam z tego skorzysta — Google LLC przy logowaniu przez konto Google.",
+      "Jeśli w przyszłości zostanie uruchomiona płatność online, dane niezbędne do jej realizacji będą przekazywane również dostawcy usług płatniczych, o czym ta informacja zostanie zaktualizowana.",
       "Dane nie są sprzedawane ani udostępniane w celach marketingowych podmiotom trzecim.",
     ],
   },
@@ -65,8 +64,8 @@ const sections = [
   {
     title: "7. Pliki cookies",
     items: [
-      "Strona w podstawowej wersji korzysta wyłącznie z plików niezbędnych do jej prawidłowego działania.",
-      "TODO: jeśli dodasz narzędzia analityczne lub marketingowe (Google Analytics, Meta Pixel), musisz wdrożyć baner zgody na cookies i uzupełnić tę sekcję o listę stosowanych narzędzi.",
+      "Strona korzysta wyłącznie z plików niezbędnych do jej prawidłowego działania (np. utrzymania sesji logowania). Nie są obecnie stosowane narzędzia analityczne ani marketingowe (np. Google Analytics, Meta Pixel).",
+      "W razie wdrożenia takich narzędzi Administrator zaktualizuje tę informację oraz wprowadzi baner zgody na cookies.",
       "Ustawienia dotyczące plików cookies możesz zmienić w swojej przeglądarce.",
     ],
   },
