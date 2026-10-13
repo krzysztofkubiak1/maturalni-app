@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Iterator
 from pathlib import Path
 
-from sqlmodel import Session, SQLModel, create_engine
+from sqlmodel import Session, SQLModel, create_engine, select
 
 from .config import settings
 
@@ -60,6 +60,36 @@ def _migrate_sqlite_schema() -> None:
             )
 
 
+def _migrate_legacy_reservation_status() -> None:
+    """
+    Zamówienia utworzone przez /api/enrollments (rezerwacja terminu bez
+    Stripe) PRZED wprowadzeniem osobnego statusu "reserved" mają status
+    "pending" — tę samą wartość, co dziś oznacza niedokończoną sesję Stripe
+    Checkout. /api/me/courses od tamtej zmiany pokazuje w panelu tylko
+    "paid"/"reserved", więc bez tej migracji stare rezerwacje (sprzed zmiany)
+    znikają z panelu kursanta, mimo że nadal są w bazie.
+
+    Działa na SQLite i Postgresie, jest idempotentna (bezpieczna przy każdym
+    starcie) — rozpoznaje stare rezerwacje po charakterystycznym prefiksie
+    stripe_checkout_session_id, który nadaje wyłącznie create_enrollment
+    (prawdziwe sesje Stripe mają identyfikatory zaczynające się od "cs_").
+    """
+    from . import models
+
+    with Session(engine) as session:
+        legacy_orders = session.exec(
+            select(models.Order).where(
+                models.Order.status == "pending",
+                models.Order.stripe_checkout_session_id.like("reservation-%"),  # type: ignore[attr-defined]
+            )
+        ).all()
+        for order in legacy_orders:
+            order.status = "reserved"
+            session.add(order)
+        if legacy_orders:
+            session.commit()
+
+
 def init_db() -> None:
     """Utwórz wszystkie tabele zdefiniowane w models.py (jeśli nie istnieją)."""
     _ensure_sqlite_dir()
@@ -68,6 +98,7 @@ def init_db() -> None:
 
     SQLModel.metadata.create_all(engine)
     _migrate_sqlite_schema()
+    _migrate_legacy_reservation_status()
 
 
 def get_session() -> Iterator[Session]:
