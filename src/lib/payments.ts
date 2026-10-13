@@ -11,7 +11,7 @@ export type ConfirmedOrder = {
   course_title: string;
   amount_grosze: number;
   currency: string;
-  status: "pending" | "paid" | "failed" | "expired";
+  status: "pending" | "reserved" | "paid" | "failed" | "expired";
   created_at: string;
   paid_at: string | null;
 };
@@ -58,7 +58,7 @@ export type AdminOrder = {
   course_title: string;
   amount_grosze: number;
   currency: string;
-  status: "pending" | "paid" | "failed" | "expired";
+  status: "pending" | "reserved" | "paid" | "failed" | "expired";
   student_name: string;
   student_last_name: string;
   student_email: string;

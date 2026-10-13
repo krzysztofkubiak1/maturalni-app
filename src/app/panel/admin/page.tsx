@@ -26,7 +26,8 @@ export const dynamic = "force-dynamic";
 
 const statusLabels: Record<AdminOrder["status"], { label: string; tone: "green" | "accent" | "neutral" }> = {
   paid: { label: "Opłacone", tone: "green" },
-  pending: { label: "Oczekuje na płatność", tone: "accent" },
+  reserved: { label: "Zarezerwowano — czeka na grupę", tone: "accent" },
+  pending: { label: "Checkout rozpoczęty, nieopłacone", tone: "neutral" },
   failed: { label: "Płatność nieudana", tone: "neutral" },
   expired: { label: "Sesja wygasła", tone: "neutral" },
 };

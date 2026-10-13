@@ -90,9 +90,17 @@ export default async function PanelPage() {
                           {course.course_title}
                         </p>
                         <p className="mt-0.5 text-xs text-slate-500">
-                          Kupiony {formatDate(course.purchased_at)}
+                          {course.status === "paid"
+                            ? `Kupiony ${formatDate(course.purchased_at)}`
+                            : `Zarezerwowano ${formatDate(course.purchased_at)}`}
                           {details ? ` · ${details.format}` : ""}
                         </p>
+                        {course.status === "reserved" ? (
+                          <p className="mt-1 text-xs text-amber-700">
+                            Czekamy, aż skompletuje się grupa na ten termin — wtedy
+                            odezwiemy się w sprawie płatności.
+                          </p>
+                        ) : null}
                       </div>
                       <Link
                         href={`/kursy/${course.course_slug}`}

@@ -33,9 +33,10 @@ export type PurchasedCourse = {
   course_slug: string;
   course_title: string;
   purchased_at: string;
+  status: "reserved" | "paid";
 };
 
-/** Lista kursów, do których zalogowany użytkownik ma opłacony dostęp. */
+/** Lista kursów zalogowanego użytkownika — zarezerwowanych i opłaconych. */
 export async function getMyCourses(): Promise<PurchasedCourse[]> {
   const cookieStore = await cookies();
   const token = cookieStore.get(SESSION_COOKIE);

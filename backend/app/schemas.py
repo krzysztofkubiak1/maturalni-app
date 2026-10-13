@@ -265,3 +265,6 @@ class PurchasedCourseOut(BaseModel):
     course_slug: str
     course_title: str
     purchased_at: datetime
+    # "reserved" = zarezerwowano termin, czekamy na skompletowanie grupy i płatność.
+    # "paid" = opłacone.
+    status: str

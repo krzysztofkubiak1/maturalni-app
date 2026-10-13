@@ -200,12 +200,12 @@ def _user_has_course(db: Session, user_id: int, course_slug: str) -> bool:
 
 
 def _user_has_active_order(db: Session, user_id: int, course_slug: str) -> bool:
-    """True, jeśli użytkownik ma już zamówienie na ten kurs w toku (pending) albo opłacone."""
+    """True, jeśli użytkownik ma już zamówienie na ten kurs w toku, zarezerwowane albo opłacone."""
     existing = db.exec(
         select(Order).where(
             Order.user_id == user_id,
             Order.course_slug == course_slug,
-            Order.status.in_(("pending", "paid")),  # type: ignore[union-attr]
+            Order.status.in_(("pending", "reserved", "paid")),  # type: ignore[union-attr]
         )
     ).first()
     return existing is not None
@@ -313,7 +313,10 @@ def create_enrollment(
         course_title=item.title,
         amount_grosze=item.price_grosze,
         currency=settings.currency,
-        status="pending",
+        # "reserved" (nie "pending") — odróżnia zarezerwowany termin (ten endpoint)
+        # od rozpoczętej, ale niedokończonej sesji Stripe Checkout (create_checkout_session),
+        # która NIE powinna pojawiać się w panelu jako "Twój kurs".
+        status="reserved",
         student_name=data.student_name.strip(),
         student_last_name=data.student_last_name.strip(),
         student_email=data.student_email.strip(),
@@ -593,10 +596,14 @@ def my_courses(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_session),
 ) -> list[PurchasedCourseOut]:
+    # "paid" = opłacone; "reserved" = zarezerwowany termin, czeka na skompletowanie
+    # grupy i płatność (patrz create_enrollment — TYMCZASOWY tryb bez Stripe).
+    # Celowo BEZ "pending" — to rozpoczęta, ale niedokończona sesja Stripe Checkout,
+    # która nie powinna wyglądać jak posiadany kurs.
     orders = db.exec(
         select(Order)
-        .where(Order.user_id == current_user.id, Order.status == "paid")
-        .order_by(Order.paid_at.desc())  # type: ignore[union-attr]
+        .where(Order.user_id == current_user.id, Order.status.in_(["paid", "reserved"]))  # type: ignore[attr-defined]
+        .order_by(Order.created_at.desc())  # type: ignore[union-attr]
     ).all()
 
     seen: set[str] = set()
@@ -610,6 +617,7 @@ def my_courses(
                 course_slug=order.course_slug,
                 course_title=order.course_title,
                 purchased_at=order.paid_at or order.created_at,
+                status=order.status,
             )
         )
     return result

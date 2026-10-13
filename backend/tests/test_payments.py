@@ -372,11 +372,16 @@ def run() -> None:
     check("rezerwacja bez Stripe -> 201", r.status_code == 201, r.text)
     body = r.json()
     check(
-        "rezerwacja: status pending, bez checkout_url",
-        body.get("status") == "pending" and "checkout_url" not in body,
+        "rezerwacja: status reserved, bez checkout_url",
+        body.get("status") == "reserved" and "checkout_url" not in body,
         str(body),
     )
-    check("rezerwacja: nie pojawia się w me/courses (nieopłacona)", client7.get("/api/me/courses").json() == [])
+    courses7 = client7.get("/api/me/courses").json()
+    check(
+        "rezerwacja: widoczna w me/courses ze statusem reserved",
+        len(courses7) == 1 and courses7[0]["status"] == "reserved",
+        str(courses7),
+    )
     orders7 = client7.get("/api/me/orders").json()
     check(
         "rezerwacja: widoczna w me/orders",
