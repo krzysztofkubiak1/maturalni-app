@@ -531,7 +531,7 @@ export const courses: Course[] = [
       "Nie zakładamy, że umiesz już wszystko z klas wcześniejszych. Pierwsze tygodnie to solidne domknięcie podstaw — bo większość problemów z rozszerzeniem bierze się z dziur w rzeczach pozornie prostych. Później tempo rośnie.",
       "Od lutego przechodzimy w tryb arkuszowy: piszemy pełne arkusze na czas, omawiamy każde zadanie i pracujemy nad zapisem rozwiązań, bo tam co roku giną punkty.",
     ],
-    startDate: "15 września", // TODO
+    startDate: "1 listopada", // TODO
     schedule: "wtorki, czwartki", // TODO
     duration: "listopad – kwiecień",
     lessons: 25,
@@ -569,7 +569,7 @@ export const courses: Course[] = [
       "Zaczynamy od ułamków, potęg i przekształcania wzorów. Dopiero na tym budujemy funkcje, ciągi i geometrię. Tempo jest spokojne, a każdy temat kończy się zestawem zadań od najprostszych do maturalnych.",
       "Celem nie jest 30% na zaliczenie. Naszym uczniom wychodzi średnio znacznie więcej — bo materiał podstawowy jest naprawdę do ogarnięcia, jeśli ktoś przejdzie z Tobą przez niego po kolei.",
     ],
-    startDate: "1 października", // TODO
+    startDate: "1 listopada", // TODO
     schedule: "wtorki, czwartki", // TODO
     duration: "listopad – kwiecień",
     lessons: 25,
@@ -605,10 +605,10 @@ export const courses: Course[] = [
       "Zajęcia prowadzi na zmianę dwoje nauczycieli, więc poznajesz dwa różne sposoby tłumaczenia tego samego zagadnienia — to często pomaga, gdy jedno wytłumaczenie „nie kliknęło”.",
       "Od lutego przechodzimy w tryb arkuszowy: piszemy pełne arkusze na czas, w warunkach zbliżonych do egzaminu, i szczegółowo omawiamy każdy błąd.",
     ],
-    startDate: "1 października", // TODO
+    startDate: "1 listopada", // TODO
     schedule: "wtorki, czwartki", // TODO
     location: contact.address, // TODO: adres realnej sali zajęć, jeśli inny niż siedziba
-    duration: "wrzesień – kwiecień",
+    duration: "listopad – kwiecień",
     lessons: 25,
     hoursTotal: 50,
     groupSize: "do 10 osób",
@@ -645,7 +645,7 @@ export const courses: Course[] = [
       "Zaczynamy od ułamków, potęg i przekształcania wzorów. Dopiero na tym budujemy funkcje, ciągi i geometrię. Tempo jest spokojne, a każdy temat kończy się zestawem zadań od najprostszych do maturalnych.",
       "Zajęcia prowadzi na zmianę dwoje nauczycieli — łatwiej wtedy trafić na sposób tłumaczenia, który akurat do Ciebie przemawia.",
     ],
-    startDate: "1 października", // TODO
+    startDate: "1 listopada", // TODO
     schedule: "wtorki, czwartki", // TODO
     location: contact.address, // TODO: adres realnej sali zajęć, jeśli inny niż siedziba
     duration: "listopad – kwiecień",

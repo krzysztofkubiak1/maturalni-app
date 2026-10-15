@@ -2,46 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { AlertCircle, Check, X } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import AuthField from "@/components/AuthField";
 import CodeVerificationForm from "@/components/CodeVerificationForm";
 import GoogleSignInButton from "@/components/GoogleSignInButton";
+import PasswordRulesList, { passwordRules } from "@/components/PasswordRulesList";
 import { readApiError } from "@/lib/apiError";
-import { cx } from "@/components/ui";
 
 type Challenge = { id: string; destinationHint: string };
-
-const passwordRules = [
-  { label: "co najmniej 8 znaków", test: (v: string) => v.length >= 8 },
-  { label: "co najmniej jedna litera", test: (v: string) => /[a-zA-Z]/.test(v) },
-  { label: "co najmniej jedna cyfra", test: (v: string) => /\d/.test(v) },
-];
-
-function PasswordRulesList({ password }: { password: string }) {
-  return (
-    <ul className="mt-1.5 grid gap-1">
-      {passwordRules.map((rule) => {
-        const ok = rule.test(password);
-        return (
-          <li
-            key={rule.label}
-            className={cx(
-              "flex items-center gap-1.5 text-xs",
-              ok ? "text-emerald-700" : "text-slate-500",
-            )}
-          >
-            {ok ? (
-              <Check className="size-3.5 shrink-0" />
-            ) : (
-              <X className="size-3.5 shrink-0 text-slate-300" />
-            )}
-            {rule.label}
-          </li>
-        );
-      })}
-    </ul>
-  );
-}
 
 export default function RegisterForm({
   redirectTo = "/panel",

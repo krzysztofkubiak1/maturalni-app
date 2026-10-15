@@ -19,6 +19,16 @@ Przepływ logowania:
   POST /api/auth/login {email, password}
      -> hasło sprawdzone, sesja i ciasteczko powstają od razu (200 + UserOut).
 
+Reset hasła (ten sam mechanizm kodu e-mail, osobny "purpose"), trzy kroki:
+  1. POST /api/auth/password/forgot {email}
+     -> jeśli konto istnieje, wysyła 6-cyfrowy kod i zwraca ChallengeOut.
+  2. POST /api/auth/password/verify-code {challenge_id, code}
+     -> TYLKO potwierdza kod (zanim pokażemy pole na nowe hasło); kodu
+        jeszcze NIE zużywa, hasło się jeszcze nie zmienia.
+  3. POST /api/auth/password/reset {challenge_id, code, new_password}
+     -> sprawdza kod jeszcze raz, ustawia nowe hasło, kasuje WSZYSTKIE inne
+        sesje tego konta i od razu zaczyna nową (200 + UserOut).
+
 Logowanie Google (OAuth 2.0, "Authorization Code"):
   GET /api/auth/google/login    -> przekierowanie do ekranu zgody Google
   GET /api/auth/google/callback -> Google wraca tu z kodem; wymieniamy go na
@@ -31,6 +41,9 @@ Trasy:
   POST /api/auth/login/verify   — sprawdza kod rejestracyjny, zaczyna sesję
   POST /api/auth/login/resend   — wysyła nowy kod dla tego samego wyzwania
   POST /api/auth/login          — sprawdza hasło, od razu zaczyna sesję
+  POST /api/auth/password/forgot      — wysyła kod resetu hasła (jeśli konto istnieje)
+  POST /api/auth/password/verify-code — tylko potwierdza kod, bez zmiany hasła
+  POST /api/auth/password/reset       — sprawdza kod, ustawia nowe hasło, zaczyna sesję
   GET  /api/auth/google/login   — przekierowanie do logowania Google
   GET  /api/auth/google/callback — powrót z Google, zaczyna sesję
   POST /api/auth/logout         — wylogowanie (kasuje sesję i ciasteczko)
@@ -49,15 +62,17 @@ from sqlmodel import Session, select
 
 from .config import settings
 from .database import get_session
-from .email import send_login_code
+from .email import send_login_code, send_password_reset_code
 from .legal import CURRENT_TERMS_VERSION
 from .models import AuthSession, LoginChallenge, User
 from .schemas import (
     ChallengeOut,
+    ForgotPasswordIn,
     LoginIn,
     MessageOut,
     RegisterIn,
     ResendCodeIn,
+    ResetPasswordIn,
     UserOut,
     VerifyCodeIn,
 )
@@ -320,6 +335,131 @@ def login(data: LoginIn, response: Response, db: Session = Depends(get_session))
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Nieprawidłowy e-mail lub hasło.",
         )
+
+    _start_session(db, user, response)
+    return user
+
+
+# --------------------------------------------------------------------------- #
+#  Reset hasła — ten sam mechanizm kodu e-mail co rejestracja (purpose="reset"),#
+#  ale osobny od "register"/sesji logowania, żeby jeden kod nie dawał dostępu  #
+#  do drugiej operacji.                                                       #
+# --------------------------------------------------------------------------- #
+
+@router.post("/password/forgot", response_model=ChallengeOut)
+def forgot_password(data: ForgotPasswordIn, db: Session = Depends(get_session)) -> ChallengeOut:
+    email = data.email.lower().strip()
+    user = db.exec(select(User).where(User.email == email)).first()
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Nie znaleziono konta z tym adresem e-mail.",
+        )
+
+    latest = db.exec(
+        select(LoginChallenge)
+        .where(LoginChallenge.user_id == user.id, LoginChallenge.purpose == "reset")
+        .order_by(LoginChallenge.created_at.desc())  # type: ignore[union-attr]
+    ).first()
+    if latest is not None:
+        elapsed = (utcnow() - latest.created_at).total_seconds()
+        if elapsed < settings.otp_resend_cooldown_seconds:
+            wait = int(settings.otp_resend_cooldown_seconds - elapsed)
+            raise HTTPException(
+                status_code=429,
+                detail=f"Poczekaj jeszcze {wait} s przed ponownym wysłaniem kodu.",
+            )
+
+    # Unieważnij nierozliczone wyzwania resetu — ważny ma być tylko najnowszy kod.
+    pending = db.exec(
+        select(LoginChallenge).where(
+            LoginChallenge.user_id == user.id,
+            LoginChallenge.purpose == "reset",
+            LoginChallenge.consumed_at.is_(None),  # type: ignore[union-attr]
+        )
+    ).all()
+    for old in pending:
+        old.consumed_at = utcnow()
+        db.add(old)
+    db.commit()
+
+    challenge, code = _create_challenge(db, user, purpose="reset")
+    send_password_reset_code(user.email, user.name, code)
+
+    return _challenge_response(challenge, user)
+
+
+def _check_reset_code(db: Session, challenge_id: str, code: str) -> LoginChallenge:
+    """
+    Wspólna walidacja kodu resetu hasła (wyzwanie istnieje i ma "purpose" =
+    "reset", nieużyte, nie wygasło, limit prób, kod się zgadza) — używana
+    zarówno do samego zatwierdzenia kodu (verify_reset_code), jak i do
+    właściwej zmiany hasła (reset_password). NIE oznacza wyzwania jako
+    zużyte — to robi dopiero reset_password, gdy hasło faktycznie się zmieni,
+    żeby sam podgląd poprawności kodu nie psuł możliwości dokończenia resetu.
+    """
+    challenge = db.get(LoginChallenge, challenge_id)
+    if challenge is None or challenge.purpose != "reset":
+        raise HTTPException(status_code=404, detail="Nie znaleziono takiego wyzwania logowania.")
+
+    if challenge.consumed_at is not None:
+        raise HTTPException(
+            status_code=400,
+            detail="Ten kod został już wykorzystany albo unieważniony. Poproś o nowy.",
+        )
+
+    if challenge.expires_at < utcnow():
+        raise HTTPException(status_code=400, detail="Kod wygasł. Poproś o nowy.")
+
+    if challenge.attempts >= settings.otp_max_attempts:
+        raise HTTPException(
+            status_code=429,
+            detail="Zbyt wiele nieudanych prób. Poproś o nowy kod.",
+        )
+
+    if hash_token(code) != challenge.code_hash:
+        challenge.attempts += 1
+        db.add(challenge)
+        db.commit()
+        remaining = max(settings.otp_max_attempts - challenge.attempts, 0)
+        raise HTTPException(
+            status_code=401,
+            detail=f"Nieprawidłowy kod. Pozostało prób: {remaining}.",
+        )
+
+    return challenge
+
+
+@router.post("/password/verify-code", response_model=MessageOut)
+def verify_reset_code(data: VerifyCodeIn, db: Session = Depends(get_session)) -> MessageOut:
+    """Osobny krok przed zmianą hasła: potwierdza kod, zanim pokażemy pole na nowe hasło."""
+    _check_reset_code(db, data.challenge_id, data.code)
+    return MessageOut(message="Kod poprawny.")
+
+
+@router.post("/password/reset", response_model=UserOut)
+def reset_password(
+    data: ResetPasswordIn, response: Response, db: Session = Depends(get_session)
+) -> User:
+    challenge = _check_reset_code(db, data.challenge_id, data.code)
+
+    user = db.get(User, challenge.user_id)
+    if user is None:
+        raise HTTPException(status_code=404, detail="Konto powiązane z kodem już nie istnieje.")
+
+    challenge.consumed_at = utcnow()
+    db.add(challenge)
+
+    user.password_hash = hash_password(data.new_password)
+    db.add(user)
+    db.commit()
+
+    # Reset hasła unieważnia wszystkie inne sesje — skradzione/stare ciasteczko
+    # przestaje działać, gdy właściciel konta ustawi nowe hasło.
+    old_sessions = db.exec(select(AuthSession).where(AuthSession.user_id == user.id)).all()
+    for old_session in old_sessions:
+        db.delete(old_session)
+    db.commit()
 
     _start_session(db, user, response)
     return user

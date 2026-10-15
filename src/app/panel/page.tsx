@@ -103,7 +103,7 @@ export default async function PanelPage() {
                         ) : null}
                       </div>
                       <Link
-                        href={`/kursy/${course.course_slug}`}
+                        href={`/panel/kursy/${course.course_slug}`}
                         className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50"
                       >
                         Otwórz

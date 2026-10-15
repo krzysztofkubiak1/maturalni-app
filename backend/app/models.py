@@ -75,7 +75,8 @@ class LoginChallenge(SQLModel, table=True):
     user_id: int = Field(foreign_key="user.id", index=True)
     # Hash kodu (SHA-256) — sam kod nigdy nie trafia do bazy.
     code_hash: str
-    # "login" albo "register" — tylko do doboru treści maila.
+    # "register" albo "reset" — tylko do doboru treści maila i odróżnienia
+    # kodu rejestracyjnego od kodu resetu hasła (patrz auth.py).
     purpose: str
     attempts: int = Field(default=0)
     created_at: datetime = Field(default_factory=utcnow)

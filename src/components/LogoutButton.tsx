@@ -13,7 +13,7 @@ export default function LogoutButton() {
   async function handleClick() {
     setPending(true);
     await logout();
-    router.push("/");
+    router.push("/logowanie?wylogowano=1");
     router.refresh();
   }
 

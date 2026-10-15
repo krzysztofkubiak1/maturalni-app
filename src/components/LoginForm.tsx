@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, CheckCircle2 } from "lucide-react";
 import AuthField from "@/components/AuthField";
 import GoogleSignInButton from "@/components/GoogleSignInButton";
 import { useAuth } from "@/components/AuthProvider";
@@ -12,9 +12,11 @@ import { readApiError } from "@/lib/apiError";
 export default function LoginForm({
   redirectTo = "/panel",
   googleError = false,
+  loggedOut = false,
 }: {
   redirectTo?: string;
   googleError?: boolean;
+  loggedOut?: boolean;
 }) {
   const router = useRouter();
   const { refresh } = useAuth();
@@ -58,6 +60,13 @@ export default function LoginForm({
 
   return (
     <div className="grid gap-5">
+      {loggedOut ? (
+        <p className="flex items-start gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+          <CheckCircle2 className="mt-0.5 size-4 shrink-0" />
+          Zostałeś wylogowany.
+        </p>
+      ) : null}
+
       <GoogleSignInButton redirectTo={redirectTo} />
 
       <div className="flex items-center gap-3 text-xs font-medium uppercase tracking-wide text-slate-400">
@@ -86,15 +95,23 @@ export default function LoginForm({
           autoComplete="email"
           placeholder="twoj@email.pl"
         />
-        <AuthField
-          id="password"
-          name="password"
-          type="password"
-          label="Hasło"
-          required
-          autoComplete="current-password"
-          placeholder="Twoje hasło"
-        />
+        <div>
+          <AuthField
+            id="password"
+            name="password"
+            type="password"
+            label="Hasło"
+            required
+            autoComplete="current-password"
+            placeholder="Twoje hasło"
+          />
+          <Link
+            href="/zapomniane-haslo"
+            className="mt-1.5 inline-block text-xs font-semibold text-brand-700 underline"
+          >
+            Zapomniałeś hasła?
+          </Link>
+        </div>
 
         <button
           type="submit"

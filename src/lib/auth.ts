@@ -53,3 +53,43 @@ export async function getMyCourses(): Promise<PurchasedCourse[]> {
     return [];
   }
 }
+
+export type MyOrder = {
+  id: number;
+  course_slug: string;
+  course_title: string;
+  amount_grosze: number;
+  currency: string;
+  status: "pending" | "reserved" | "paid" | "failed" | "expired";
+  preferred_schedule: string;
+  created_at: string;
+  paid_at: string | null;
+};
+
+/**
+ * Szczegóły rezerwacji/zamówienia zalogowanego użytkownika dla danego kursu
+ * (do strony "Twoja rezerwacja" w panelu) — najnowsze zarezerwowane albo
+ * opłacone zamówienie na ten kurs, albo `null`, jeśli takiego nie ma.
+ */
+export async function getMyOrderForCourse(courseSlug: string): Promise<MyOrder | null> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get(SESSION_COOKIE);
+  if (!token) return null;
+
+  try {
+    const res = await fetch(`${INTERNAL_API_URL}/api/me/orders`, {
+      headers: { cookie: `${token.name}=${token.value}` },
+      cache: "no-store",
+    });
+    if (!res.ok) return null;
+    const orders = (await res.json()) as MyOrder[];
+    return (
+      orders.find(
+        (order) =>
+          order.course_slug === courseSlug && (order.status === "paid" || order.status === "reserved"),
+      ) ?? null
+    );
+  } catch {
+    return null;
+  }
+}

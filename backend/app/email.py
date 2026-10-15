@@ -85,3 +85,18 @@ def send_login_code(to: str, name: str, code: str) -> None:
         "Jeśli to nie Ty próbowałeś/aś się zalogować, po prostu zignoruj tę wiadomość."
     )
     send_email(to, subject, text)
+
+
+def send_password_reset_code(to: str, name: str, code: str) -> None:
+    """Kod resetu hasła — wysyłany po POST /api/auth/password/forgot."""
+    subject = f"Reset hasła — {settings.site_name}"
+
+    text = (
+        f"Cześć {name},\n\n"
+        f"Dostaliśmy prośbę o reset hasła do Twojego konta w {settings.site_name}.\n\n"
+        f"Twój kod: {code}\n\n"
+        f"Kod jest ważny przez {settings.otp_ttl_minutes} minut.\n"
+        "Jeśli to nie Ty prosiłeś/aś o reset hasła, zignoruj tę wiadomość — "
+        "Twoje obecne hasło nadal działa, nikt nic nie zmienił."
+    )
+    send_email(to, subject, text)

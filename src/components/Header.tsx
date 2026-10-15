@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ChevronDown, LayoutDashboard, LogOut, Menu, Phone, Sigma, User, X } from "lucide-react";
 import { contact, navLinks, site } from "@/data/site";
@@ -11,6 +11,7 @@ import { useAuth } from "@/components/AuthProvider";
 
 export default function Header() {
   const pathname = usePathname();
+  const router = useRouter();
   const { user, loading, logout } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [coursesOpen, setCoursesOpen] = useState(false);
@@ -49,6 +50,8 @@ export default function Header() {
   const handleLogout = async () => {
     setMobileOpen(false);
     await logout();
+    router.push("/logowanie?wylogowano=1");
+    router.refresh();
   };
 
   return (

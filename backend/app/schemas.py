@@ -14,6 +14,14 @@ def _validate_phone(value: str) -> str:
     return value.strip()
 
 
+def _validate_password(value: str) -> str:
+    if not any(ch.isalpha() for ch in value):
+        raise ValueError("Hasło musi zawierać co najmniej jedną literę.")
+    if not any(ch.isdigit() for ch in value):
+        raise ValueError("Hasło musi zawierać co najmniej jedną cyfrę.")
+    return value
+
+
 class RegisterIn(BaseModel):
     name: str = Field(min_length=2, max_length=80)
     last_name: str = Field(min_length=2, max_length=80)
@@ -26,11 +34,7 @@ class RegisterIn(BaseModel):
     @field_validator("password")
     @classmethod
     def validate_password(cls, value: str) -> str:
-        if not any(ch.isalpha() for ch in value):
-            raise ValueError("Hasło musi zawierać co najmniej jedną literę.")
-        if not any(ch.isdigit() for ch in value):
-            raise ValueError("Hasło musi zawierać co najmniej jedną cyfrę.")
-        return value
+        return _validate_password(value)
 
     @field_validator("accept_terms")
     @classmethod
@@ -120,6 +124,23 @@ class VerifyCodeIn(BaseModel):
 
 class ResendCodeIn(BaseModel):
     challenge_id: str = Field(min_length=1, max_length=64)
+
+
+# --- Reset hasła --------------------------------------------------------------
+
+class ForgotPasswordIn(BaseModel):
+    email: EmailStr
+
+
+class ResetPasswordIn(BaseModel):
+    challenge_id: str = Field(min_length=1, max_length=64)
+    code: str = Field(min_length=6, max_length=6, pattern=r"^\d{6}$")
+    new_password: str = Field(min_length=8, max_length=128)
+
+    @field_validator("new_password")
+    @classmethod
+    def validate_new_password(cls, value: str) -> str:
+        return _validate_password(value)
 
 
 # --- Płatności --------------------------------------------------------------

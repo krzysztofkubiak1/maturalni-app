@@ -26,6 +26,7 @@ export default async function LoginPage({
   const params = await searchParams;
   const redirectTo = safeRedirect(params["po-zalogowaniu"]);
   const googleError = params["blad"] === "google";
+  const loggedOut = params["wylogowano"] === "1";
 
   const user = await getCurrentUser();
   if (user) redirect(redirectTo);
@@ -42,7 +43,7 @@ export default async function LoginPage({
       <section className="bg-white py-16 sm:py-20">
         <Container className="max-w-md">
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-900/5 sm:p-8">
-            <LoginForm redirectTo={redirectTo} googleError={googleError} />
+            <LoginForm redirectTo={redirectTo} googleError={googleError} loggedOut={loggedOut} />
           </div>
         </Container>
       </section>
