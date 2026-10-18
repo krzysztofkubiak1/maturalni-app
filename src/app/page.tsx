@@ -121,7 +121,7 @@ export default function HomePage() {
           <SectionHeading
             eyebrow="Jak zacząć"
             title="Cztery kroki od telefonu do pierwszych zajęć"
-            description="Zapisanie się zajmuje kilka minut i nie wiąże Cię z niczym. Decydujesz dopiero po lekcji próbnej."
+            description="Zapisanie się zajmuje kilka minut. Dopytujemy o Twój poziom i cel, i dobieramy grupę z pasującym terminem."
           />
 
           <ol className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-4">

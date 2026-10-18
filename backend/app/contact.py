@@ -1,5 +1,5 @@
 """
-Ogólny formularz kontaktowy ("Zamów rozmowę" / "Zapisz się na lekcję próbną").
+Ogólny formularz kontaktowy ("Zamów rozmowę" / "Zapytaj o kurs").
 
 Inaczej niż /api/enrollments — to formularz dla GOŚCI, bez logowania. Front
 (Server Action w src/app/actions.ts) woła to po własnej walidacji, ale ten

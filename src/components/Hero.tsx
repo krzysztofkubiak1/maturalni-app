@@ -73,11 +73,11 @@ export default function Hero() {
 
           <div className="animate-rise rounded-3xl border border-white/10 bg-white p-6 shadow-2xl shadow-black/30 sm:p-8">
             <h2 className="font-display text-xl font-bold text-ink">
-              Zapisz się na lekcję próbną
+              Zapytaj o kurs
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-slate-600">
               Zostaw numer — oddzwonimy, dopytamy o Twój poziom i zaproponujemy
-              grupę z pasującym terminem. Pierwsze zajęcia bez opłat.
+              grupę z pasującym terminem.
             </p>
             <div className="mt-6">
               <ContactForm compact />

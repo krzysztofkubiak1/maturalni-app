@@ -180,18 +180,20 @@ export default function Header() {
                 </button>
               </div>
             ) : (
-              <>
-                <Link
-                  href="/logowanie"
-                  className="hidden rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 transition hover:text-brand-700 sm:inline-flex"
-                >
-                  Zaloguj się
-                </Link>
-                <ButtonLink href="/kontakt" size="sm" className="hidden sm:inline-flex">
-                  Zapisz się
-                </ButtonLink>
-              </>
+              <Link
+                href="/logowanie"
+                className="hidden rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 transition hover:text-brand-700 sm:inline-flex"
+              >
+                Zaloguj się
+              </Link>
             )}
+
+            {/* "Zapisz się" prowadzi do listy kursów — pokazujemy je zawsze,
+                niezależnie od zalogowania: zalogowany użytkownik też może
+                chcieć zarezerwować kolejny kurs. */}
+            <ButtonLink href="/kursy" size="sm" className="hidden sm:inline-flex">
+              Zapisz się
+            </ButtonLink>
 
             {!loading ? (
               <Link
@@ -289,7 +291,7 @@ export default function Header() {
               </div>
 
               <div className="mt-4 grid gap-2 border-t border-slate-200 pt-4">
-                <ButtonLink href="/kontakt" size="md">
+                <ButtonLink href="/kursy" size="md">
                   Zapisz się na kurs
                 </ButtonLink>
                 <a

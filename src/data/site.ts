@@ -159,7 +159,7 @@ export const faq = [
   },
   {
     q: "Jak zapisać się na kurs?",
-    a: "Wypełnij formularz na stronie albo zadzwoń. Oddzwaniamy zwykle tego samego dnia, dopytujemy o Twój poziom i cel, i proponujemy grupę z pasującym terminem. Potem przychodzisz na lekcję próbną.",
+    a: "Wypełnij formularz na stronie albo zadzwoń. Oddzwaniamy zwykle tego samego dnia, dopytujemy o Twój poziom i cel, i proponujemy grupę z pasującym terminem.",
   },
   {
     q: "Czy prowadzicie zajęcia stacjonarnie?",

@@ -27,7 +27,6 @@ const sections = [
     items: [
       "Zapis następuje przez formularz na stronie internetowej, telefonicznie lub mailowo.",
       "Po zgłoszeniu Organizator kontaktuje się z Uczestnikiem w celu ustalenia poziomu kursu oraz terminu zajęć.",
-      "Pierwsze zajęcia mają charakter lekcji próbnej i są bezpłatne. Uczestnik może po nich zrezygnować bez ponoszenia jakichkolwiek kosztów.",
       "Liczba miejsc w grupie jest ograniczona; o przyjęciu decyduje kolejność zgłoszeń.",
     ],
   },

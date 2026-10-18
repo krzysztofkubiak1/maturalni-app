@@ -26,7 +26,7 @@ const values = [
   {
     icon: ShieldCheck,
     title: "Uczciwe zasady",
-    text: "Bez płatności z góry, bez umów wiążących na rok, bez opłaty wpisowej. Jeśli po lekcji próbnej stwierdzisz, że to nie dla Ciebie — po prostu nie wracasz.",
+    text: "Bez płatności z góry, bez umów wiążących na rok, bez opłaty wpisowej. Jeśli stwierdzisz, że to nie dla Ciebie — po prostu rezygnujesz, bez żadnych konsekwencji.",
   },
   {
     icon: Sparkles,
