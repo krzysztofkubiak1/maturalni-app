@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
-import LegalNotice from "@/components/LegalNotice";
 import { Container } from "@/components/ui";
 import { contact, site } from "@/data/site";
 
@@ -16,7 +15,7 @@ const sections = [
     title: "§1. Postanowienia ogólne",
     items: [
       `Regulamin określa zasady korzystania z kursów przygotowujących do egzaminu maturalnego z matematyki, organizowanych przez ${site.name} (dalej: Organizator).`,
-      `Organizatorem jest Krzysztof Kubiak, prowadzący działalność nierejestrowaną w rozumieniu art. 5 ustawy z dnia 6 marca 2018 r. – Prawo przedsiębiorców, działający pod marką ${site.name}. Adres do korespondencji: ${contact.address}.`,
+      `Organizatorem jest Magdalena Komuda-Kubiak, prowadzący działalność nierejestrowaną w rozumieniu art. 5 ustawy z dnia 6 marca 2018 r. – Prawo przedsiębiorców, działający pod marką ${site.name}. Adres do korespondencji: ${contact.address}.`,
       "Działalność prowadzona jest w ramach ustawowego limitu przychodu dla działalności nierejestrowanej. Po jego przekroczeniu lub rejestracji działalności gospodarczej Organizator niezwłocznie uzupełni regulamin o dane rejestrowe (NIP, REGON).",
       `Kontakt z Organizatorem: ${contact.phone}, ${contact.email}.`,
       "Uczestnikiem kursu może być osoba pełnoletnia lub osoba niepełnoletnia za zgodą rodzica albo opiekuna prawnego.",
@@ -96,9 +95,7 @@ export default function TermsPage() {
 
       <section className="bg-white py-16 sm:py-20">
         <Container className="max-w-3xl">
-          <LegalNotice />
-
-          <div className="mt-10 space-y-10">
+          <div className="space-y-10">
             {sections.map((section) => (
               <section key={section.title}>
                 <h2 className="font-display text-xl font-bold text-ink">

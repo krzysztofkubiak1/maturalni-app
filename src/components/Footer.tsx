@@ -170,10 +170,6 @@ export default function Footer() {
           <p>
             © {year} {site.name}. Wszelkie prawa zastrzeżone.
           </p>
-          <p>
-            Statystyki na stronie są przykładowe — uzupełnij je prawdziwymi danymi
-            przed publikacją.
-          </p>
         </div>
       </Container>
     </footer>

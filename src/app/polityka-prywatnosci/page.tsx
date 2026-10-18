@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
-import LegalNotice from "@/components/LegalNotice";
 import { Container } from "@/components/ui";
 import { contact, site } from "@/data/site";
 
@@ -15,7 +14,7 @@ const sections = [
   {
     title: "1. Administrator danych",
     items: [
-      `Administratorem danych osobowych jest Krzysztof Kubiak, prowadzący działalność nierejestrowaną w rozumieniu art. 5 ustawy z dnia 6 marca 2018 r. – Prawo przedsiębiorców, działający pod marką ${site.name}.`,
+      `Administratorem danych osobowych jest Magdalena Komuda-Kubiak, prowadzący działalność nierejestrowaną w rozumieniu art. 5 ustawy z dnia 6 marca 2018 r. – Prawo przedsiębiorców, działający pod marką ${site.name}.`,
       `Adres do korespondencji: ${contact.address}. Nie wyznaczono inspektora ochrony danych — we wszystkich sprawach związanych z danymi osobowymi należy kontaktować się bezpośrednio z Administratorem.`,
       `Kontakt w sprawach danych osobowych: ${contact.email}, ${contact.phone}.`,
     ],
@@ -90,9 +89,7 @@ export default function PrivacyPage() {
 
       <section className="bg-white py-16 sm:py-20">
         <Container className="max-w-3xl">
-          <LegalNotice />
-
-          <div className="mt-10 space-y-10">
+          <div className="space-y-10">
             {sections.map((section) => (
               <section key={section.title}>
                 <h2 className="font-display text-xl font-bold text-ink">
