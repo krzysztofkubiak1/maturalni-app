@@ -86,7 +86,7 @@ export const features = [
   {
     icon: "Users",
     title: "Małe grupy, realny kontakt",
-    text: "Maksymalnie 12 osób w grupie. Możesz przerwać, dopytać i poprosić o powtórzenie — nikt Cię nie zbędzie.",
+    text: "Możesz przerwać, dopytać i poprosić o powtórzenie — nikt Cię nie zbędzie.",
   },
   {
     icon: "Video",
@@ -139,7 +139,7 @@ export const faq = [
   },
   {
     q: "Jak duże są grupy?",
-    a: "Maksymalnie 12 osób stacjonarnie. To na tyle mało, że każdy zdąży zadać pytanie i że widzimy, kto ma z czym problem.",
+    a: "Maksymalnie 8 osób stacjonarnie. To na tyle mało, że każdy zdąży zadać pytanie i że widzimy, kto ma z czym problem.",
   },
   {
     q: "Zaczynam z bardzo niskiego poziomu. Czy to ma sens?",

@@ -611,7 +611,7 @@ export const courses: Course[] = [
     duration: "listopad – kwiecień",
     lessons: 25,
     hoursTotal: 50,
-    groupSize: "do 10 osób",
+    groupSize: "do 8 osób",
     price: { amount: 140, unit: "/ lekcje", note: "płatne z góry" }, // TODO
     forWhom: [
       "Wolisz uczyć się w realnym kontakcie, nie przez ekran",
@@ -651,7 +651,7 @@ export const courses: Course[] = [
     duration: "listopad – kwiecień",
     lessons: 25,
     hoursTotal: 50,
-    groupSize: "do 10 osób",
+    groupSize: "do 8 osób",
     price: { amount: 130, unit: "/ lekcje", note: "płatne z góry" }, // TODO
     forWhom: [
       "Wolisz uczyć się w realnym kontakcie, nie przez ekran",
