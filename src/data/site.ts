@@ -77,7 +77,7 @@ export const teachers: Teacher[] = [
 export const stats = [
   { value: "7", label: "lat doświadczenia" },
   { value: "Setki", label: "przygotowanych maturzystów" },
-  { value: "80%", label: "średni wynik z rozszerzenia (2025)" },
+  { value: "80%", label: "średni wynik z rozszerzenia" },
   { value: "100%", label: "zdawalność poziomu podstawowego" },
 ] as const;
 

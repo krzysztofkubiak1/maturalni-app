@@ -537,7 +537,7 @@ export const courses: Course[] = [
     lessons: 25,
     hoursTotal: 50,
     groupSize: "do 50 osób",
-    price: { amount: 100, unit: "/ lekcje.", note: "płatne z góry" }, // TODO
+    price: { amount: 70, unit: "/ lekcje.", note: "płatne z góry" }, // TODO
     forWhom: [
       "Zdajesz rozszerzenie i potrzebujesz konkretnego wyniku na studia",
       "Masz braki z wcześniejszych klas i chcesz je uzupełnić bez wstydu",
@@ -575,7 +575,7 @@ export const courses: Course[] = [
     lessons: 25,
     hoursTotal: 50,
     groupSize: "do 50 osób",
-    price: { amount: 90, unit: "/ lekcje", note: "płatne z góry" }, // TODO
+    price: { amount: 60, unit: "/ lekcje", note: "płatne z góry" }, // TODO
     forWhom: [
       "Chcesz mieć pewność, że zdasz maturę podstawową",
       "Masz duże braki i nie wiesz, od czego zacząć",
@@ -612,7 +612,7 @@ export const courses: Course[] = [
     lessons: 25,
     hoursTotal: 50,
     groupSize: "do 8 osób",
-    price: { amount: 140, unit: "/ lekcje", note: "płatne z góry" }, // TODO
+    price: { amount: 80, unit: "/ lekcje", note: "płatne z góry" }, // TODO
     forWhom: [
       "Wolisz uczyć się w realnym kontakcie, nie przez ekran",
       "Zdajesz rozszerzenie i potrzebujesz konkretnego wyniku na studia",
@@ -652,7 +652,7 @@ export const courses: Course[] = [
     lessons: 25,
     hoursTotal: 50,
     groupSize: "do 8 osób",
-    price: { amount: 130, unit: "/ lekcje", note: "płatne z góry" }, // TODO
+    price: { amount: 70, unit: "/ lekcje", note: "płatne z góry" }, // TODO
     forWhom: [
       "Wolisz uczyć się w realnym kontakcie, nie przez ekran",
       "Chcesz mieć pewność, że zdasz maturę podstawową",
@@ -660,7 +660,7 @@ export const courses: Course[] = [
       "Potrzebujesz kogoś, kto poukłada Ci naukę tydzień po tygodniu",
     ],
     includes: [
-      "2 lekcje po 100 minut tygodniowo, stacjonarnie",
+      "1 lekcja po 100 minut tygodniowo, stacjonarnie",
       "Kameralna grupa i bezpośredni kontakt z prowadzącym",
       "Skrypty i zestawy zadań od poziomu podstawowego",
       "Zadania domowe sprawdzane z komentarzem",
